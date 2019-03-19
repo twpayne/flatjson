@@ -1,0 +1,46 @@
+package flatjson
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestFlatJSON(t *testing.T) {
+	for _, tc := range []struct {
+		v  interface{}
+		fj string
+	}{
+		{
+			v:  nil,
+			fj: "root = null;\n",
+		},
+		{
+			v:  true,
+			fj: "root = true;\n",
+		},
+		{
+			v:  false,
+			fj: "root = false;\n",
+		},
+		{
+			v:  0,
+			fj: "root = 0;\n",
+		},
+		{
+			v:  []interface{}{},
+			fj: "root = [];\n",
+		},
+		{
+			v:  map[string]interface{}{},
+			fj: "root = {};\n",
+		},
+	} {
+		gotFJ, err := Marshal(tc.v)
+		assert.NoError(t, err)
+		assert.Equal(t, tc.fj, string(gotFJ))
+		actualV := tc.v
+		assert.NoError(t, Unmarshal([]byte(tc.fj), &actualV))
+		assert.Equal(t, tc.v, actualV)
+	}
+}
