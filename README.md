@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/twpayne/flatjson.svg?branch=master)](https://travis-ci.org/twpayne/flatjson)
 [![GoDoc](https://godoc.org/github.com/twpayne/flatjson?status.svg)](https://godoc.org/github.com/twpayne/flatjson)
-[![Report Card](https://goreportcard.com/badge/github.com/twpayne/flatjson)](https://goreportcard.com/report/github.com/twpayne/flatjson)
 
 ## Overview
 
