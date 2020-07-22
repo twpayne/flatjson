@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"github.com/pmezard/go-difflib/difflib"
+
 	"github.com/twpayne/flatjson"
 )
 
@@ -39,7 +40,7 @@ func runDiff() error {
 	if len(flag.Args()) != 2 {
 		return errors.New("-diff requires exactly two filenames")
 	}
-	var text []string
+	text := make([]string, 0, flag.NArg())
 	for _, arg := range flag.Args() {
 		b := &bytes.Buffer{}
 		f := flatjson.NewFlattener(b, flatjson.FlattenerPrefix(*prefix), flatjson.FlattenerSuffix(*suffix))

@@ -31,9 +31,9 @@ type Flattener struct {
 type FlattenerOption func(*Flattener)
 
 func propertyAccessor(path, name string) string {
-	if unquotedPropertyNameRegexp.MatchString(name) && !keywords[string(name)] {
+	if unquotedPropertyNameRegexp.MatchString(name) && !keywords[name] {
 		if path == "" {
-			return string(name)
+			return name
 		}
 		return path + "." + name
 	}

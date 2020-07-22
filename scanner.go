@@ -271,11 +271,11 @@ FOR:
 					ch := s.read()
 					switch {
 					case isDigit(ch):
-						r = (r << 4) | rune(ch-'0')
+						r = (r << 4) | (ch - '0')
 					case 'A' <= ch && ch <= 'F':
-						r = (r << 4) | rune(ch-'A'+0xa)
+						r = (r << 4) | (ch - 'A' + 0xa)
 					case 'a' <= ch && ch <= 'f':
-						r = (r << 4) | rune(ch-'f'+0xa)
+						r = (r << 4) | (ch - 'f' + 0xa)
 					default:
 						return tokenIllegal, string(ch)
 					}
