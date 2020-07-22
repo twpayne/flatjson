@@ -1,6 +1,5 @@
 # `flatjson`
 
-[![Build Status](https://travis-ci.org/twpayne/flatjson.svg?branch=master)](https://travis-ci.org/twpayne/flatjson)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/twpayne/flatjson)](https://pkg.go.dev/github.com/twpayne/flatjson)
 
 ## Overview
