@@ -1,11 +1,11 @@
-# `flatjson`
+# flatjson
 
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/twpayne/flatjson)](https://pkg.go.dev/github.com/twpayne/flatjson)
 
 ## Overview
 
-`flatjson` converts JSON files to a "flat" representation with one value per
-line. For example, given the input:
+flatjson converts JSON files to a "flat" representation with one value per line.
+For example, given the input:
 
 ```json
 {
@@ -32,7 +32,7 @@ line. For example, given the input:
 }
 ```
 
-`flatjson` outputs:
+flatjson outputs:
 
 ```js
 root = {};
@@ -114,7 +114,7 @@ To convert a file to flat JSON, specify it on the command line, for example:
 
     flatjson vendor/vendor.json
 
-If no filenames are specified, `flatjson` will read JSON from the standard
+If no filenames are specified, flatjson will read JSON from the standard
 input.
 
 ## Generated a unified diff
