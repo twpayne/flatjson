@@ -1,12 +1,12 @@
 package flatjson
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 // A Encoder flattens JSON.
@@ -154,11 +154,11 @@ func (e *Encoder) encodeHelper(prefix string, value interface{}) error {
 
 // Marshal returns the flatjson encoding of v.
 func Marshal(v interface{}, options ...EncoderOption) ([]byte, error) {
-	w := &bytes.Buffer{}
-	if err := NewEncoder(w, options...).Encode(v); err != nil {
+	sb := &strings.Builder{}
+	if err := NewEncoder(sb, options...).Encode(v); err != nil {
 		return nil, err
 	}
-	return w.Bytes(), nil
+	return []byte(sb.String()), nil
 }
 
 // EncoderPrefix sets the prefix.

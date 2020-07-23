@@ -2,9 +2,9 @@ package flatjson
 
 import (
 	"bufio"
-	"bytes"
 	"io"
 	"strconv"
+	"strings"
 )
 
 type token int
@@ -108,54 +108,54 @@ func (s *scanner) scan() (token, string) {
 }
 
 func (s *scanner) scanComment() (token, string) {
-	var buf bytes.Buffer
+	var sb strings.Builder
 	ch := s.read()
-	buf.WriteRune(ch)
+	sb.WriteRune(ch)
 	ch = s.read()
 	switch {
 	case ch == '/':
-		buf.WriteRune(ch)
+		sb.WriteRune(ch)
 		for {
 			ch := s.read()
 			switch {
 			case ch == eof:
-				return tokenComment, buf.String()
+				return tokenComment, sb.String()
 			case ch == '\n':
-				buf.WriteRune(ch)
-				return tokenComment, buf.String()
+				sb.WriteRune(ch)
+				return tokenComment, sb.String()
 			default:
-				buf.WriteRune(ch)
+				sb.WriteRune(ch)
 			}
 		}
 	case ch == '*':
-		buf.WriteRune(ch)
+		sb.WriteRune(ch)
 		for {
 			ch := s.read()
 			switch {
 			case ch == eof:
-				return tokenIllegal, buf.String()
+				return tokenIllegal, sb.String()
 			case ch == '*':
-				buf.WriteRune(ch)
+				sb.WriteRune(ch)
 				ch = s.read()
 				switch {
 				case ch == '/':
-					buf.WriteRune(ch)
-					return tokenComment, buf.String()
+					sb.WriteRune(ch)
+					return tokenComment, sb.String()
 				default:
 					s.unread()
 				}
 			default:
-				buf.WriteRune(ch)
+				sb.WriteRune(ch)
 			}
 		}
 	default:
-		return tokenIllegal, buf.String()
+		return tokenIllegal, sb.String()
 	}
 }
 
 func (s *scanner) scanIdentifier() (token, string) {
-	var buf bytes.Buffer
-	buf.WriteRune(s.read())
+	var sb strings.Builder
+	sb.WriteRune(s.read())
 FOR:
 	for {
 		ch := s.read()
@@ -166,10 +166,10 @@ FOR:
 			s.unread()
 			break FOR
 		default:
-			buf.WriteRune(ch)
+			sb.WriteRune(ch)
 		}
 	}
-	switch s := buf.String(); s {
+	switch s := sb.String(); s {
 	case "false":
 		return tokenFalse, s
 	case "null":
@@ -182,31 +182,31 @@ FOR:
 }
 
 func (s *scanner) scanNumber() (token, string) {
-	var buf bytes.Buffer
+	var sb strings.Builder
 	ch := s.read()
 	switch {
 	case ch == '-':
-		buf.WriteRune(ch)
+		sb.WriteRune(ch)
 	default:
 		s.unread()
 	}
 	ch = s.read()
 	switch {
 	case ch == '0':
-		buf.WriteRune(ch)
+		sb.WriteRune(ch)
 	case '1' <= ch && ch <= '9':
-		buf.WriteRune(ch)
+		sb.WriteRune(ch)
 		for ch = s.read(); isDigit(ch); ch = s.read() {
-			buf.WriteRune(ch)
+			sb.WriteRune(ch)
 		}
 		s.unread()
 	}
 	ch = s.read()
 	switch {
 	case ch == '.':
-		buf.WriteRune(ch)
+		sb.WriteRune(ch)
 		for ch = s.read(); isDigit(ch); ch = s.read() {
-			buf.WriteRune(ch)
+			sb.WriteRune(ch)
 		}
 		s.unread()
 	default:
@@ -215,33 +215,33 @@ func (s *scanner) scanNumber() (token, string) {
 	ch = s.read()
 	switch {
 	case ch == 'e' || ch == 'E':
-		buf.WriteRune(ch)
+		sb.WriteRune(ch)
 		ch = s.read()
 		switch {
 		case ch == '+' || ch == '-':
-			buf.WriteRune(ch)
+			sb.WriteRune(ch)
 		default:
 			s.unread()
 		}
 		ch := s.read()
 		switch {
 		case isDigit(ch):
-			buf.WriteRune(ch)
+			sb.WriteRune(ch)
 		default:
 			return tokenIllegal, ""
 		}
 		for ch = s.read(); isDigit(ch); ch = s.read() {
-			buf.WriteRune(ch)
+			sb.WriteRune(ch)
 		}
 		s.unread()
 	default:
 		s.unread()
 	}
-	return tokenNumber, buf.String()
+	return tokenNumber, sb.String()
 }
 
 func (s *scanner) scanString() (token, string) {
-	var buf bytes.Buffer
+	var sb strings.Builder
 	if ch := s.read(); ch != '"' {
 		return tokenIllegal, string(ch)
 	}
@@ -254,17 +254,17 @@ FOR:
 		case ch == '\\':
 			switch ch := s.read(); ch {
 			case '"', '\\', '/':
-				buf.WriteRune(ch)
+				sb.WriteRune(ch)
 			case 'b':
-				buf.WriteRune('\b')
+				sb.WriteRune('\b')
 			case 'f':
-				buf.WriteRune('\f')
+				sb.WriteRune('\f')
 			case 'n':
-				buf.WriteRune('\n')
+				sb.WriteRune('\n')
 			case 'r':
-				buf.WriteRune('\r')
+				sb.WriteRune('\r')
 			case 't':
-				buf.WriteRune('\t')
+				sb.WriteRune('\t')
 			case 'u':
 				var r rune
 				for i := 0; i < 4; i++ {
@@ -280,19 +280,19 @@ FOR:
 						return tokenIllegal, string(ch)
 					}
 				}
-				buf.WriteRune(r)
+				sb.WriteRune(r)
 			default:
 				return tokenIllegal, string(ch)
 			}
 		default:
-			buf.WriteRune(ch)
+			sb.WriteRune(ch)
 		}
 	}
-	return tokenString, buf.String()
+	return tokenString, sb.String()
 }
 
 func (s *scanner) scanWhitespace() (token, string) {
-	var buf bytes.Buffer
+	var buf strings.Builder
 	buf.WriteRune(s.read())
 FOR:
 	for {

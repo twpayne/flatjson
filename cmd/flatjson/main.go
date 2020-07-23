@@ -2,13 +2,13 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/pmezard/go-difflib/difflib"
 
@@ -42,12 +42,12 @@ func runDiff() error {
 	}
 	text := make([]string, 0, flag.NArg())
 	for _, arg := range flag.Args() {
-		b := &bytes.Buffer{}
-		f := flatjson.NewFlattener(b, flatjson.FlattenerPrefix(*prefix), flatjson.FlattenerSuffix(*suffix))
+		sb := &strings.Builder{}
+		f := flatjson.NewFlattener(sb, flatjson.FlattenerPrefix(*prefix), flatjson.FlattenerSuffix(*suffix))
 		if err := writeValuesFromFile(f, arg); err != nil {
 			return err
 		}
-		text = append(text, b.String())
+		text = append(text, sb.String())
 	}
 	diff := difflib.UnifiedDiff{
 		A:        difflib.SplitLines(text[0]),
