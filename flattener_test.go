@@ -1,75 +1,77 @@
 package flatjson
 
 import (
-	"bytes"
+	"strconv"
+	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestWriteValues(t *testing.T) {
-	for _, tc := range []struct {
-		prefix string
-		json   string
-		want   string
+	for i, tc := range []struct {
+		prefix   string
+		json     string
+		expected string
 	}{
 		{
-			json: `{}`,
-			want: "root = {};\n",
+			json:     `{}`,
+			expected: "root = {};\n",
 		},
 		{
-			json: `[]`,
-			want: "root = [];\n",
+			json:     `[]`,
+			expected: "root = [];\n",
 		},
 		{
-			json: `0`,
-			want: "root = 0;\n",
+			json:     `0`,
+			expected: "root = 0;\n",
 		},
 		{
-			json: `""`,
-			want: "root = \"\";\n",
+			json:     `""`,
+			expected: "root = \"\";\n",
 		},
 		{
-			json: `true`,
-			want: "root = true;\n",
+			json:     `true`,
+			expected: "root = true;\n",
 		},
 		{
-			json: `false`,
-			want: "root = false;\n",
+			json:     `false`,
+			expected: "root = false;\n",
 		},
 		{
-			json: `null`,
-			want: "root = null;\n",
+			json:     `null`,
+			expected: "root = null;\n",
 		},
 		{
-			json: `[1,2,3]`,
-			want: "root = [];\nroot[0] = 1;\nroot[1] = 2;\nroot[2] = 3;\n",
+			json:     `[1,2,3]`,
+			expected: "root = [];\nroot[0] = 1;\nroot[1] = 2;\nroot[2] = 3;\n",
 		},
 		{
-			json: `{"a":{"b":"c"}}`,
-			want: "root = {};\nroot.a = {};\nroot.a.b = \"c\";\n",
+			json:     `{"a":{"b":"c"}}`,
+			expected: "root = {};\nroot.a = {};\nroot.a.b = \"c\";\n",
 		},
 		{
-			json: `{"a.b":"c"}`,
-			want: "root = {};\nroot[\"a.b\"] = \"c\";\n",
+			json:     `{"a.b":"c"}`,
+			expected: "root = {};\nroot[\"a.b\"] = \"c\";\n",
 		},
 		{
-			json: `{"false":false}`,
-			want: "root = {};\nroot[\"false\"] = false;\n",
+			json:     `{"false":false}`,
+			expected: "root = {};\nroot[\"false\"] = false;\n",
 		},
 		{
-			json: `{"null":false}`,
-			want: "root = {};\nroot[\"null\"] = false;\n",
+			json:     `{"null":false}`,
+			expected: "root = {};\nroot[\"null\"] = false;\n",
 		},
 		{
-			json: `{"true":false}`,
-			want: "root = {};\nroot[\"true\"] = false;\n",
+			json:     `{"true":false}`,
+			expected: "root = {};\nroot[\"true\"] = false;\n",
 		},
 	} {
-		b := &bytes.Buffer{}
-		if err := NewFlattener(b).WriteValues([]byte(tc.json)); err != nil {
-			t.Errorf("WriteValues(%q, %q) == %v, want <nil>", tc.prefix, tc.json, err)
-		}
-		if got := b.String(); got != tc.want {
-			t.Errorf("WriteValues(%q, %q) wrote:\n%s\nwant:%s", tc.prefix, tc.json, got, tc.want)
-		}
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			sb := &strings.Builder{}
+			require.NoError(t, NewFlattener(sb).WriteValues([]byte(tc.json)))
+			assert.Equal(t, tc.expected, sb.String())
+		})
 	}
 }

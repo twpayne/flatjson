@@ -1,13 +1,14 @@
 package flatjson
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFlatJSON(t *testing.T) {
-	for _, tc := range []struct {
+	for i, tc := range []struct {
 		v  interface{}
 		fj string
 	}{
@@ -36,11 +37,13 @@ func TestFlatJSON(t *testing.T) {
 			fj: "root = {};\n",
 		},
 	} {
-		gotFJ, err := Marshal(tc.v)
-		assert.NoError(t, err)
-		assert.Equal(t, tc.fj, string(gotFJ))
-		actualV := tc.v
-		assert.NoError(t, Unmarshal([]byte(tc.fj), &actualV))
-		assert.Equal(t, tc.v, actualV)
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			gotFJ, err := Marshal(tc.v)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.fj, string(gotFJ))
+			actualV := tc.v
+			assert.NoError(t, Unmarshal([]byte(tc.fj), &actualV))
+			assert.Equal(t, tc.v, actualV)
+		})
 	}
 }

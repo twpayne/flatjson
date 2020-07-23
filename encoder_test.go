@@ -3,13 +3,15 @@ package flatjson
 import (
 	"bytes"
 	"encoding/json"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestWriteValue(t *testing.T) {
-	for _, tc := range []struct {
+	for i, tc := range []struct {
 		json     string
 		expected string
 	}{
@@ -66,16 +68,18 @@ func TestWriteValue(t *testing.T) {
 			expected: "root = {};\nroot[\"true\"] = false;\n",
 		},
 	} {
-		w := &bytes.Buffer{}
-		var value interface{}
-		assert.NoError(t, json.Unmarshal([]byte(tc.json), &value))
-		assert.NoError(t, NewEncoder(w).Encode(value))
-		assert.Equal(t, tc.expected, w.String())
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			sb := &strings.Builder{}
+			var value interface{}
+			assert.NoError(t, json.Unmarshal([]byte(tc.json), &value))
+			assert.NoError(t, NewEncoder(sb).Encode(value))
+			assert.Equal(t, tc.expected, sb.String())
+		})
 	}
 }
 
 func TestFlattenDecoder(t *testing.T) {
-	for _, tc := range []struct {
+	for i, tc := range []struct {
 		s         string
 		prefix    string
 		useNumber bool
@@ -152,13 +156,15 @@ func TestFlattenDecoder(t *testing.T) {
 			expected:  "root = {};\nroot[\"quoted.prop\"] = 0;\n",
 		},
 	} {
-		d := json.NewDecoder(bytes.NewBufferString(tc.s))
-		if tc.useNumber {
-			d.UseNumber()
-		}
-		w := &bytes.Buffer{}
-		e := NewEncoder(w, EncoderPrefix(tc.prefix))
-		assert.NoError(t, e.Transcode(d))
-		assert.Equal(t, tc.expected, w.String())
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			d := json.NewDecoder(bytes.NewBufferString(tc.s))
+			if tc.useNumber {
+				d.UseNumber()
+			}
+			sb := &strings.Builder{}
+			e := NewEncoder(sb, EncoderPrefix(tc.prefix))
+			assert.NoError(t, e.Transcode(d))
+			assert.Equal(t, tc.expected, sb.String())
+		})
 	}
 }
