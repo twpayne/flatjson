@@ -108,14 +108,20 @@ yields the diff:
 
     go install github.com/twpayne/flatjson/cmd/flatjson
 
-## Generating flat JSON
+## Converting JSON to flat JSON
 
-To convert a file to flat JSON, specify it on the command line, for example:
+To convert a JSON file to flat JSON, specify it on the command line, for
+example:
 
     flatjson vendor/vendor.json
 
 If no filenames are specified, flatjson will read JSON from the standard
 input.
+
+## Generating flat JSON from JSON
+
+To reverse the transformation, i.e. to convert flat JSON to JSON, specify the
+`-reverse` option.
 
 ## Generated a unified diff
 
