@@ -8,7 +8,6 @@ linters:
   - dupl
   - errcheck
   - exportloopref
-  - gocognit
   - goconst
   - gocritic
   - gocyclo
@@ -17,15 +16,12 @@ linters:
   - gofmt
   - gofumpt
   - goimports
-  - golint
   - gomodguard
   - goprintffuncname
   - gosec
   - gosimple
   - govet
   - ineffassign
-  - interfacer
-  - maligned
   - misspell
   - nakedret
   - nestif
@@ -33,7 +29,6 @@ linters:
   - nolintlint
   - prealloc
   - rowserrcheck
-  - scopelint
   - sqlclosecheck
   - staticcheck
   - structcheck
@@ -48,6 +43,7 @@ linters:
   - exhaustive
   - funlen
   - gochecknoglobals
+  - gocognit
   - gomnd
   - goerr113
   - lll
