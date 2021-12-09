@@ -41,7 +41,7 @@ func (t token) String() string {
 	if s, ok := tokenStrings[t]; ok {
 		return s
 	}
-	return string(t)
+	return string(rune(t))
 }
 
 func (t token) formatLiteral(lit string) string {
