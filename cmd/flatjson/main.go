@@ -43,7 +43,7 @@ func runDiff() error {
 	text := make([]string, 0, pflag.NArg())
 	for _, arg := range pflag.Args() {
 		sb := &strings.Builder{}
-		f := flatjson.NewFlattener(sb, flatjson.FlattenerPrefix(*prefix), flatjson.FlattenerSuffix(*suffix))
+		f := flatjson.NewFlattener(sb, flatjson.WithPrefix(*prefix), flatjson.WithSuffix(*suffix))
 		if err := writeValuesFromFile(f, arg); err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ func runDiff() error {
 // runForward flat writes the JSON in each file specified on the command line.
 // If no files are specified then the JSON is read from stdin.
 func runForward() error {
-	f := flatjson.NewFlattener(os.Stdout, flatjson.FlattenerPrefix(*prefix), flatjson.FlattenerSuffix(*suffix))
+	f := flatjson.NewFlattener(os.Stdout, flatjson.WithPrefix(*prefix), flatjson.WithSuffix(*suffix))
 	if len(pflag.Args()) == 0 {
 		data, err := io.ReadAll(os.Stdin)
 		if err != nil {

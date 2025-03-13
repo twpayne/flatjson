@@ -109,15 +109,15 @@ func (f *Flattener) WriteValues(data []byte) error {
 	return f.writeValuesHelper(f.prefix, value)
 }
 
-// FlattenerPrefix sets the prefix on a Flattener.
-func FlattenerPrefix(prefix string) FlattenerOption {
+// WithPrefix sets the prefix on a Flattener.
+func WithPrefix(prefix string) FlattenerOption {
 	return func(f *Flattener) {
 		f.prefix = prefix
 	}
 }
 
-// FlattenerSuffix sets the suffix on a Flattener.
-func FlattenerSuffix(suffix string) FlattenerOption {
+// WithSuffix sets the suffix on a Flattener.
+func WithSuffix(suffix string) FlattenerOption {
 	return func(f *Flattener) {
 		f.suffix = suffix
 	}
