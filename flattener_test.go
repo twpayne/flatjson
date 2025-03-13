@@ -10,7 +10,6 @@ import (
 
 func TestWriteValues(t *testing.T) {
 	for i, tc := range []struct {
-		prefix   string
 		json     string
 		expected string
 	}{
