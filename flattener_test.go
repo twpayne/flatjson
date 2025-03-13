@@ -5,8 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestWriteValues(t *testing.T) {
@@ -70,7 +69,7 @@ func TestWriteValues(t *testing.T) {
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			sb := &strings.Builder{}
-			require.NoError(t, NewFlattener(sb).WriteValues([]byte(tc.json)))
+			assert.NoError(t, NewFlattener(sb).WriteValues([]byte(tc.json)))
 			assert.Equal(t, tc.expected, sb.String())
 		})
 	}

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestParseAssignment(t *testing.T) {
