@@ -2,6 +2,7 @@ package flatjson
 
 import (
 	"bufio"
+	"errors"
 	"io"
 	"strconv"
 	"strings"
@@ -71,7 +72,7 @@ func newScanner(r io.Reader) *scanner {
 func (s *scanner) read() rune {
 	ch, _, err := s.r.ReadRune()
 	switch {
-	case err == io.EOF:
+	case errors.Is(err, io.EOF):
 		return eof
 	case err == nil:
 		return ch
@@ -267,7 +268,7 @@ FOR:
 				sb.WriteRune('\t')
 			case 'u':
 				var r rune
-				for i := 0; i < 4; i++ {
+				for range 4 {
 					ch := s.read()
 					switch {
 					case isDigit(ch):

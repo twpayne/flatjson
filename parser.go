@@ -7,21 +7,21 @@ import (
 	"strconv"
 )
 
-type errUnexpected struct {
+type unexpectedError struct {
 	tok      token
 	lit      string
 	expected []token
 }
 
 func newErrUnexpected(tok token, lit string, expected ...token) error {
-	return &errUnexpected{
+	return &unexpectedError{
 		tok:      tok,
 		lit:      lit,
 		expected: expected,
 	}
 }
 
-func (e errUnexpected) Error() string {
+func (e unexpectedError) Error() string {
 	return fmt.Sprintf("expected %v, found %s", e.expected, e.tok.formatLiteral(e.lit))
 }
 
