@@ -6,7 +6,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 
@@ -64,7 +64,7 @@ func runDiff() error {
 func runForward() error {
 	f := flatjson.NewFlattener(os.Stdout, flatjson.FlattenerPrefix(*prefix), flatjson.FlattenerSuffix(*suffix))
 	if len(flag.Args()) == 0 {
-		data, err := ioutil.ReadAll(os.Stdin)
+		data, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			return err
 		}
@@ -105,12 +105,7 @@ func runReverse() error {
 // writeValuesFromFile reads JSON from the file named filename and writes the
 // flattened values to f.
 func writeValuesFromFile(f *flatjson.Flattener, filename string) error {
-	r, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-	data, err := ioutil.ReadAll(r)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
