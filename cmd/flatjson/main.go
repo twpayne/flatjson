@@ -4,23 +4,23 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"flag"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 
 	"github.com/pmezard/go-difflib/difflib"
+	"github.com/spf13/pflag"
 
 	"github.com/twpayne/flatjson"
 )
 
 var (
-	context = flag.Int("context", 3, "context")
-	diff    = flag.Bool("diff", false, "diff")
-	prefix  = flag.String("prefix", "root", "prefix.")
-	suffix  = flag.String("suffix", ";\n", "suffix.")
-	reverse = flag.Bool("reverse", false, "reverse")
+	context = pflag.Int("context", 3, "context")
+	diff    = pflag.Bool("diff", false, "diff")
+	prefix  = pflag.String("prefix", "root", "prefix.")
+	suffix  = pflag.String("suffix", ";\n", "suffix.")
+	reverse = pflag.Bool("reverse", false, "reverse")
 )
 
 // mergeValuesFromFile reads flat JSON from the file named filename and merges
@@ -37,11 +37,11 @@ func mergeValuesFromFile(d *flatjson.Deepener, root interface{}, filename string
 // runDiff writes the diff of the flat writes of the two files specified on the
 // command line.
 func runDiff() error {
-	if len(flag.Args()) != 2 {
+	if len(pflag.Args()) != 2 {
 		return errors.New("-diff requires exactly two filenames")
 	}
-	text := make([]string, 0, flag.NArg())
-	for _, arg := range flag.Args() {
+	text := make([]string, 0, pflag.NArg())
+	for _, arg := range pflag.Args() {
 		sb := &strings.Builder{}
 		f := flatjson.NewFlattener(sb, flatjson.FlattenerPrefix(*prefix), flatjson.FlattenerSuffix(*suffix))
 		if err := writeValuesFromFile(f, arg); err != nil {
@@ -52,8 +52,8 @@ func runDiff() error {
 	diff := difflib.UnifiedDiff{
 		A:        difflib.SplitLines(text[0]),
 		B:        difflib.SplitLines(text[1]),
-		FromFile: flag.Arg(0),
-		ToFile:   flag.Arg(1),
+		FromFile: pflag.Arg(0),
+		ToFile:   pflag.Arg(1),
 		Context:  *context,
 	}
 	return difflib.WriteUnifiedDiff(os.Stdout, diff)
@@ -63,14 +63,14 @@ func runDiff() error {
 // If no files are specified then the JSON is read from stdin.
 func runForward() error {
 	f := flatjson.NewFlattener(os.Stdout, flatjson.FlattenerPrefix(*prefix), flatjson.FlattenerSuffix(*suffix))
-	if len(flag.Args()) == 0 {
+	if len(pflag.Args()) == 0 {
 		data, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			return err
 		}
 		return f.WriteValues(data)
 	}
-	for _, arg := range flag.Args() {
+	for _, arg := range pflag.Args() {
 		if err := writeValuesFromFile(f, arg); err != nil {
 			return err
 		}
@@ -84,14 +84,14 @@ func runForward() error {
 func runReverse() error {
 	d := flatjson.NewDeepener()
 	var root interface{}
-	if len(flag.Args()) == 0 {
+	if len(pflag.Args()) == 0 {
 		var err error
 		root, err = d.MergeValues(root, os.Stdin)
 		if err != nil {
 			return err
 		}
 	} else {
-		for _, arg := range flag.Args() {
+		for _, arg := range pflag.Args() {
 			var err error
 			root, err = mergeValuesFromFile(d, root, arg)
 			if err != nil {
@@ -127,7 +127,7 @@ func run() error {
 }
 
 func main() {
-	flag.Parse()
+	pflag.Parse()
 	if err := run(); err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)

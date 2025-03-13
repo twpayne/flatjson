@@ -128,9 +128,9 @@ To reverse the transformation, i.e. to convert flat JSON to JSON, specify the
 To generate a unified diff between two JSON files, specify the `-diff` option
 and the filenames on the command line, for example:
 
-    flatjson -diff ./testdata/a.json ./testdata/b.json
+    flatjson --diff ./testdata/a.json ./testdata/b.json
 
-An additional `-context` option specifies how many lines of context to show.
+An additional `--context` option specifies how many lines of context to show.
 The default is three.
 
 ## License
