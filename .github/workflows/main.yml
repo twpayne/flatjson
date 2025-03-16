@@ -13,16 +13,9 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34
       with:
-        go-version: 1.14.x
-    - name: Cache Go modules
-      uses: actions/cache@f111f3307d8850f501ac008e886eec1fd1932a34
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+        go-version: stable
     - name: Checkout
-      uses: actions/checkout@2226d7cb06a077cd73e56eedd38eecad18e5d837
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Build
       run: go build ./...
     - name: Test
@@ -31,8 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@2226d7cb06a077cd73e56eedd38eecad18e5d837
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Lint
       uses: golangci/golangci-lint-action@2226d7cb06a077cd73e56eedd38eecad18e5d837
       with:
-        version: f111f3307d8850f501ac008e886eec1fd1932a34.43.0
+        version: v1.64.7
