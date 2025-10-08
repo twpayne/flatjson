@@ -1,6 +1,8 @@
 module github.com/twpayne/flatjson
 
-go 1.23.0
+go 1.24
+
+tool github.com/twpayne/flatjson/cmd/flatjson
 
 require (
 	github.com/alecthomas/assert/v2 v2.11.0
